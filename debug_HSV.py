@@ -5,8 +5,18 @@ if __name__ == '__main__':
         pass
 cv2.namedWindow( "result" ) # создаем главное окно
 cv2.namedWindow( "settings" ) # создаем окно настроек
-#cap = cv2.VideoCapture("http://192.168.4.1:81/stream")
-cap = cv2.VideoCapture(0)
+cap = int()
+while True:
+    video_capture = int(input('Whitch video use?(1/2): '))
+    if video_capture == 1:
+        cap = cv2.VideoCapture(0)
+        break
+    if video_capture == 2:
+        cap = cv2.VideoCapture("http://192.168.4.1:81/stream")
+        break
+    else:
+        print('Eroor try again\n')
+        continue
 cv2.createTrackbar('h1', 'settings', 0, 255, nothing)
 cv2.createTrackbar('s1', 'settings', 0, 255, nothing)
 cv2.createTrackbar('v1', 'settings', 0, 255, nothing)
