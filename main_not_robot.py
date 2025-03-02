@@ -6,6 +6,8 @@ if __name__ == '__main__':
     def callback(*arg):
         print (arg)
 
+turn_angle = 180  #Инициализируем переменную угла пворота мотора
+
 cv2.namedWindow( "result" ) #Даём название окну 
 
 cap = int()  #Инициализируем переменную для видеопотока
@@ -78,7 +80,7 @@ while True:
     else:
         w_img = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         x = int((xr + xg)/2)
-        data_to_send = x - w_img/2
+        data_to_send = int((x - w_img / 2) * (turn_angle/w_img))
         cv2.circle(img, (x, 100), 10, (0,255, 0), -1)
         print(data_to_send)
         cv2.imshow('result', img)
