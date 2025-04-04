@@ -2,6 +2,12 @@
 from time import sleep
 import cv2
 import numpy as np
+import paramiko
+
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+ssh.connect('169.254.56.206', 22, 'robot', 'maker')
+
 if __name__ == '__main__':
     def callback(*arg):
         print (arg)
@@ -13,6 +19,7 @@ cv2.namedWindow( "result" ) #Даём название окну
 cap = int()  #Инициализируем переменную для видеопотока
 #Выбираем источник видеопотока
 while True:
+    sleep(0.03)
     video_capture = int(input('Whitch video use?(1/2): '))
     if video_capture == 1:
         cap = cv2.VideoCapture(0)
@@ -37,6 +44,7 @@ rhsv_max = np.array((r_h2, r_s2, r_v2), np.uint8)
 
 #Создаём основной цикл программы
 while True:
+    sleep(0.03)
     xr, xg = int(), int() #Обнуляем переменные координат
 
     ret, img = cap.read()  #Читаем изображение
@@ -72,16 +80,17 @@ while True:
 
     #Настройка П-регулятора
     if xr == 0 or xg == 0:
-        cv2.imshow('result', img)
+        # cv2.imshow('result', img)
         data_to_send = 777
         continue
     else:
         w_img = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         x = int((xr + xg)/2)
         data_to_send = int((x - w_img / 2) * (turn_angle/w_img))
-        cv2.circle(img, (x, 100), 10, (0,255, 0), -1)
-        print(data_to_send)
-        cv2.imshow('result', img)
+        ssh.exec_command(f'echo "{data_to_send}" > /tmp/motor_commands')
+        #cv2.circle(img, (x, 100), 10, (0,255, 0), -1)
+        # print(data_to_send)
+        # cv2.imshow('result', img)
 
 cap.release()
 cv2.destroyAllWindows()
