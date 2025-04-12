@@ -2,7 +2,7 @@ import paramiko
 from time import sleep
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
-ssh.connect('169.254.56.206', 22, 'robot', 'maker')
+ssh.connect('169.254.16.158', 22, 'robot', 'maker')
 i = 0
 while 1==1:  
     i = int(input()) 

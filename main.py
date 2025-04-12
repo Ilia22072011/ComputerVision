@@ -6,7 +6,7 @@ import paramiko
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
-ssh.connect('169.254.56.206', 22, 'robot', 'maker')
+ssh.connect('169.254.16.158', 22, 'robot', 'maker')
 
 if __name__ == '__main__':
     def callback(*arg):
@@ -44,7 +44,6 @@ rhsv_max = np.array((r_h2, r_s2, r_v2), np.uint8)
 
 #Создаём основной цикл программы
 while True:
-    sleep(0.03)
     xr, xg = int(), int() #Обнуляем переменные координат
 
     ret, img = cap.read()  #Читаем изображение
@@ -76,6 +75,7 @@ while True:
 
     #Проыеряяем нажание клавиши для завершения программы
     if cv2.waitKey(20) == ord('q'):
+        ssh.close()
         break
 
     #Настройка П-регулятора
@@ -89,7 +89,7 @@ while True:
         data_to_send = int((x - w_img / 2) * (turn_angle/w_img))
         ssh.exec_command(f'echo "{data_to_send}" > /tmp/motor_commands')
         #cv2.circle(img, (x, 100), 10, (0,255, 0), -1)
-        # print(data_to_send)
+        print(data_to_send)
         # cv2.imshow('result', img)
 
 cap.release()
