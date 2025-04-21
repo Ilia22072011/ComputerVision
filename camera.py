@@ -1,17 +1,10 @@
 import cv2
 from time import time
-import paramiko
 import statistics
 import numpy as np  # Импортируем NumPy
 
-ssh = paramiko.SSHClient()
-ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
-ssh.connect('169.254.205.105', 22, 'robot', 'maker')
-ssh.exec_command(f'echo 0 > /tmp/motor_commands')
-
 cap = cv2.VideoCapture(0)
 cv2.namedWindow("result")  # Даём название окну 
-ssh.exec_command(f'echo 222 > /tmp/motor_commands')
 while True:
     ret, img = cap.read()
     if not ret:  # Проверяем, удалось ли захватить изображение
@@ -37,8 +30,7 @@ while True:
                 
     if len(res) != 0:
         ans = int(statistics.median(res))
-        data = ( int(180 / width * ans) - 90)
-        ssh.exec_command(f'echo {data} > /tmp/motor_commands')
+        data = -1*( int(180 / width * ans) - 90)
         cv2.circle(img, (ans, 100), 10, (0, 255, 0), -1)
         cv2.imshow('result', img)
         print(data, '\t', time() - start)

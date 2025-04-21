@@ -8,26 +8,24 @@ import sys
 
 ev3 = EV3Brick()
 motor = Motor(Port.A)
-mB = Motor(Port.B)
-mC = Motor(Port.C)
+mb = Motor(Port.B)
+mc = Motor(Port.C)
 
 FIFO_PATH = "/tmp/motor_commands"
-
-
+last = 0
 try:
     while True:
         with open(FIFO_PATH, "r") as fifo:
             command = fifo.readline().strip()
             if command:
-                try:
-                    mB.run(100)
-                    mC.run(100)
-                    angle = int(command)
-                    motor.run_target(800, angle)
-                except ValueError:
-                    pass
-                except Exception as e:
-                    pass
+                angle = int(command)
+                if angle == 222:
+                    mb.run(150)
+                    mc.run(150)
+                else:
+                    motor.run_target(1000, angle)
+                    print(angle)
+                    last = angle
             else:
                 # Если FIFO пуст, ждем немного
                 pass # Или можно использовать time.sleep(0.1) для снижения нагрузки на CPU
